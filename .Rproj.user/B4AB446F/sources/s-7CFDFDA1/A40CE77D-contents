@@ -1,0 +1,75 @@
+---
+title: ''
+header-includes:
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+output:
+  pdf_document:
+  latex_engine: xelatex
+fig_width: 20
+html_document: default
+fig_height: 6
+word_document: default
+fontsize: 12pt
+
+---
+
+
+```{r, echo=F}
+## set up figcounter
+i = 1
+```
+\blandscape
+
+**Figure `r i`**
+```{r, out.width = "600px", echo=F,fig.align='center'}
+knitr::include_graphics("../figures/Achapter/FigureX_trait_effects.pdf"); i = i + 1
+```
+\newpage
+
+
+**Figure `r i`**
+```{r, out.width = "600px", echo=F,fig.align='center'}
+knitr::include_graphics("../figures/Achapter/FigureX_topspecies.pdf"); i = i + 1
+```
+
+\newpage
+**Figure `r i`**
+```{r, out.width = "600px", echo=F,fig.align='center'}
+knitr::include_graphics("../figures/Achapter/FigureX_FG_yields.pdf"); i = i + 1
+```
+
+\newpage
+
+**Figure `r i`**
+```{r, out.width = "600px", echo=F,fig.align='center'}
+knitr::include_graphics("../figures/Achapter/FigureX_ecosystem_yields.pdf"); i = i + 1
+```
+
+\newpage
+
+**Figure `r i`**
+```{r, out.width = "480px", echo=F,fig.align='center'}
+knitr::include_graphics("../figures/Achapter/FigureX_ecosystem_concentrations.pdf"); i = i + 1
+```
+
+\elandscape
+
+**Figure `r i`**
+```{r, out.width = "480px", echo=F,fig.align='center'}
+knitr::include_graphics("../figures/Achapter/FigureX_fish_affordability.pdf"); i = i + 1
+```
+
+\blandscape
+**Figure `r i`**
+```{r, out.width = "480px", echo=F,fig.align='center'}
+knitr::include_graphics("../figures/Achapter/FigureX_yield_percapita.pdf"); i = i + 1
+```
+
+\newpage
+**Figure `r i`**
+```{r, out.width = "480px", echo=F,fig.align='center'}
+knitr::include_graphics("../figures/Achapter/FigureX_yield_vs_risk.pdf"); i = i + 1
+```
+\elandscape
