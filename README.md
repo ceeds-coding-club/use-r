@@ -11,6 +11,11 @@ Download these materials by clicking the green button 'Code'. Or - better - stay
 ## Useful R stuff
 
 
+
+**Everything Tidyverse** 
+
+* [R for Data Science](https://r4ds.had.co.nz/index.html) (book - Hadley Wickham)
+
 **Data visualization**
 
 * [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/) (book - Claus Wilke)
