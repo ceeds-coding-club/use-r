@@ -1,0 +1,14 @@
+CITY_NAME,GMI_ADMIN,ADMIN_NAME,FIPS_CNTRY,CNTRY_NAME,STATUS,POP,POP_RANK,POP_CLASS,PORT_ID,Latitude,Longitude
+Dundee,GBR-SCT,Scotland,UK,United Kingdom,Other,151592,5,"100,000 to 249,999",32170,56.462002,-2.9707
+Southampton,GBR-ENG,England,UK,United Kingdom,Other,246201,5,"100,000 to 249,999",35580,50.909698,-1.404351
+Belfast,GBR-NIR,Northern Ireland,UK,United Kingdom,Provincial capital,274770,4,"250,000 to 499,999",33770,54.607868,-5.926437
+Sheffield,GBR-ENG,England,UK,United Kingdom,Other,447047,4,"250,000 to 499,999",0,53.383331,-1.466667
+Birmingham,GBR-ENG,England,UK,United Kingdom,Other,984333,3,"500,000 to 999,999",0,52.489471,-1.898575
+London,GBR-ENG,England,UK,United Kingdom,National and provincial capital,7421209,1,"5,000,000 and greater",31470,51.509865,-0.118092
+Teesport,GBR-ENG,England,UK,United Kingdom,Other,174700,7,"Less than 50,000",31720,54.604,-1.158
+Edinburgh,GBR-SCT,Scotland,UK,United Kingdom,Provincial capital,435791,4,"250,000 to 499,999",31930,55.953251,-3.188267
+Glasgow,GBR-SCT,Scotland,UK,United Kingdom,Other,610268,3,"500,000 to 999,999",33490,55.860916,-4.251433
+Leeds,GBR-ENG,England,UK,United Kingdom,Other,455123,4,"250,000 to 499,999",0,53.801277,-1.548567
+Manchester,GBR-ENG,England,UK,United Kingdom,Other,395515,4,"250,000 to 499,999",34700,53.483959,-2.244644
+Cardiff,GBR-WLS,Wales,UK,United Kingdom,Provincial capital,302139,4,"250,000 to 499,999",35010,51.481583,-3.17909
+Liverpool,GBR-ENG,England,UK,United Kingdom,Other,468945,4,"250,000 to 499,999",34690,53.400002,-2.983333
