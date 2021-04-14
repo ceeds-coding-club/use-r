@@ -21,6 +21,11 @@ Download these materials by clicking the green button 'Code'. Or - better - stay
 * [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/) (book - Claus Wilke)
 * [ggplot2 extensions](https://exts.ggplot2.tidyverse.org/gallery/)
 
+**Maps**
+
+* [Simple Features for map analysis](https://r-spatial.github.io/sf/) (sf package)
+* [Geocomputation in R](https://geocompr.robinlovelace.net/) (book - Lovelace et al.)
+* [Geocoding and Google Maps in R](https://evamaire.com/2020/04/16/geocoding-with-ggmap-in-r/) (LEC's Eva Maire)
 
 **R-markdown**
 
@@ -31,7 +36,7 @@ Download these materials by clicking the green button 'Code'. Or - better - stay
 
 * [Software Carpentry lessons](http://swcarpentry.github.io/git-novice/)
 * [Learn Git in R Studio](https://afredston.github.io/learn-git/learn-git.html)
-* [Github and git with R](https://happygitwithr.com/index.html) (book - Jenny Bryan)
+* [Happy Git and Github with R](https://happygitwithr.com/index.html) (book - Jenny Bryan)
 
 
 **R workflow**
