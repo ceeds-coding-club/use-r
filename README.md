@@ -1,4 +1,4 @@
-# Welcome to the LEC/CEH use-r Github repo!
+# Welcome to the CEDS use-r Github repo!
 
 This repo stores the R demos and tutorials from our R community. Feel free to use and re-use - head to **[demos](demos)** for all materials. 
 
@@ -6,7 +6,7 @@ This repo stores the R demos and tutorials from our R community. Feel free to us
 
 *Message James Robinson if you'd like to join the slack channel or get the Teams link.*
 
-Download these materials by clicking the green button 'Code'. Or - better - stay up to date with git by using  ```git clone``` and pulling updates.
+Download these materials by clicking the green button 'Code'. Or stay up to date with git by using  ```git clone``` and pulling updates.
 
 ## Useful R stuff
 
@@ -20,6 +20,7 @@ Download these materials by clicking the green button 'Code'. Or - better - stay
 
 * [Fundamentals of Data Visualization](https://clauswilke.com/dataviz/) (book - Claus Wilke)
 * [ggplot2 extensions](https://exts.ggplot2.tidyverse.org/gallery/)
+* [Data Visualization course](https://wilkelab.org/SDS375/) (slides - Claus Wilke)
 
 **Maps**
 
