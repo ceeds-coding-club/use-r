@@ -43,3 +43,15 @@ Download these materials by clicking the green button 'Code'. Or stay up to date
 **R workflow**
 
 * [here() package](https://github.com/r-lib/here)
+
+
+## Past Demos
+
+* Extending ggplot | [Resources](demos/extending_ggplot/) | [Recording](https://web.microsoftstream.com/video/7057bdea-f4b4-41a6-8f73-cb8500519044)
+* Bioconductor for bioinformatics | [Recording](https://web.microsoftstream.com/video/5b485f83-55b0-426f-a4b4-70907fb3178b)
+* Intro to maps | [Resources](demos/mapping/) | [Recording](https://web.microsoftstream.com/video/38ae2633-3ea9-4450-9c1b-0d81f7249a16)
+* Intro to functions | [Resources](demos/intro-to-functions/) | [Recording](https://web.microsoftstream.com/video/b5086b5b-c10d-42ec-9e99-f45a15e9b4a9) 
+* Intro to loops | [Resources](demos/intro-to-loops/) | [Recording](https://web.microsoftstream.com/video/30c83fa7-b74b-45ad-a79b-4cb31a63a6f1) 
+* Intro to R-markdown | [Resources](demos/rmarkdown-html)
+* Web scraping | [Resources](demos/web-scraping)
+* R-markdown for supplementary materials. [Resources](demos/rmarkdown-for-figures)
