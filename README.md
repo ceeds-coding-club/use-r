@@ -1,4 +1,4 @@
-# Welcome to the CEDS use-r Github repo!
+# Welcome to the CEEDS use-r Github repo!
 
 This repo stores the R demos and tutorials from our R community. Feel free to use and re-use - head to **[demos](demos)** for all materials. 
 
@@ -31,7 +31,9 @@ Download these materials by clicking the green button 'Code'. Or stay up to date
 **R-markdown**
 
 * [R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/) (book - Xie et al.)
-
+* Section 19 of [Happy Git with R](https://happygitwithr.com/) explains using Markdown in an R script, and is a good primer on Markdown in general 
+* Section 27 of the [R for Data Science](https://r4ds.had.co.nz/r-markdown.html) site explains modifying .R files 
+* The [RStudio Markdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf)
 
 **Github and version control**
 
@@ -47,6 +49,7 @@ Download these materials by clicking the green button 'Code'. Or stay up to date
 
 ## Past Demos
 
+* R-markdown in an R script | [Resources](demos/render-rscripts-rmd/) | [Recording](https://web.microsoftstream.com/video/9c767fc9-1935-4d93-ad2b-9449da9fae39)
 * Extending ggplot | [Resources](demos/extending_ggplot/) | [Recording](https://web.microsoftstream.com/video/7057bdea-f4b4-41a6-8f73-cb8500519044)
 * Bioconductor for bioinformatics | [Recording](https://web.microsoftstream.com/video/5b485f83-55b0-426f-a4b4-70907fb3178b)
 * Intro to maps | [Resources](demos/mapping/) | [Recording](https://web.microsoftstream.com/video/38ae2633-3ea9-4450-9c1b-0d81f7249a16)
