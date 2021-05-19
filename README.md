@@ -10,7 +10,11 @@ Download these materials by clicking the green button 'Code'. Or stay up to date
 
 ## Useful R stuff
 
+**Show-and-tell**
 
+* [Beepr](https://www.r-project.org/nosvn/pandoc/beepr.html) - makes your R script goes bing when it finishes (or [rap adlibs](https://github.com/brooke-watson/BRRR))
+* [Janitor package](https://garthtarr.github.io/meatR/janitor.html) for finding duplicates and cleaning column names
+* [Rainbow brackets](https://blog.rstudio.com/2020/11/04/rstudio-1-4-preview-rainbow-parentheses/) in R Studio
 
 **Everything Tidyverse** 
 
@@ -49,6 +53,7 @@ Download these materials by clicking the green button 'Code'. Or stay up to date
 
 ## Past Demos
 
+* Show-and-tell (May 2021) | [Recording](https://web.microsoftstream.com/video/f11fd5ba-fefc-4e52-bfd6-d79a471e133a)
 * R-markdown in an R script | [Resources](demos/render-rscripts-rmd/) | [Recording](https://web.microsoftstream.com/video/9c767fc9-1935-4d93-ad2b-9449da9fae39)
 * Extending ggplot | [Resources](demos/extending_ggplot/) | [Recording](https://web.microsoftstream.com/video/7057bdea-f4b4-41a6-8f73-cb8500519044)
 * Bioconductor for bioinformatics | [Recording](https://web.microsoftstream.com/video/5b485f83-55b0-426f-a4b4-70907fb3178b)
