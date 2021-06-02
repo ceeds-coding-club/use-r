@@ -53,6 +53,8 @@ Download these materials by clicking the green button 'Code'. Or stay up to date
 
 ## Past Demos
 
+* Intro to Tidyverse 2 | [Recording](https://web.microsoftstream.com/video/caab2def-9c6c-425e-aadf-a4b0cb51fe8e)
+* Intro to Tidyverse 1 | [Recording](https://web.microsoftstream.com/video/ede13987-3ebb-4957-8e5e-6eaebfc39ca1)
 * Show-and-tell (May 2021) | [Recording](https://web.microsoftstream.com/video/f11fd5ba-fefc-4e52-bfd6-d79a471e133a)
 * R-markdown in an R script | [Resources](demos/render-rscripts-rmd/) | [Recording](https://web.microsoftstream.com/video/9c767fc9-1935-4d93-ad2b-9449da9fae39)
 * Extending ggplot | [Resources](demos/extending_ggplot/) | [Recording](https://web.microsoftstream.com/video/7057bdea-f4b4-41a6-8f73-cb8500519044)
