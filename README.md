@@ -11,12 +11,12 @@ Download these materials by clicking the green **Code** button above. Or stay up
 
 ## Past Demos
 
+* Control structure: loops + logic |   [Resources](demos/loops) | [Recording](https://web.microsoftstream.com/video/87cf1743-33a2-4953-8021-4f9478384366)
 * Intro to mixed effects models (lme4) |  [Resources](demos/linear-models) | [Recording](https://web.microsoftstream.com/video/d99d3ddf-9350-4591-9a97-9a62f2284be8)
 * Intro to linear models (lm) |  [Resources](demos/linear-models) | [Recording](https://web.microsoftstream.com/video/f224466c-7214-4830-925d-5791440dad8d)
 * Staying organized in R | [Recording](https://web.microsoftstream.com/video/b00b07fc-7895-4624-a02c-0437beda1849)
 * Data to figure using tidyverse & Strava |  [Resources](demos/rStrava) | [Recording](https://web.microsoftstream.com/video/efb019bc-eb20-4017-b4b1-7a6480e4495b)
 * Tidyverse tricks |  [Resources](demos/tidyverse/tidyverse_tricks.Rmd) | [Recording](https://web.microsoftstream.com/video/db32b9cf-e4b7-402b-8a79-8b2a530f2792)
-
 * Intro to non-linear models | [Resources](demos/non-linear-models) | [Recording](https://web.microsoftstream.com/video/84aa500c-9a36-4f1c-8a0c-e08513c15267)
 * Intro to tidyverse 2 | [Resources](demos/tidyverse) | [Recording](https://web.microsoftstream.com/video/caab2def-9c6c-425e-aadf-a4b0cb51fe8e)
 * Intro to tidyverse 1 | [Resources](demos/tidyverse) | [Recording](https://web.microsoftstream.com/video/ede13987-3ebb-4957-8e5e-6eaebfc39ca1)
