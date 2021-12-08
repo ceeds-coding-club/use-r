@@ -11,7 +11,9 @@ Download these materials by clicking the green **Code** button above. Or stay up
 
 ## Past Demos
 
-* Control structure: loops + logic |   [Resources](demos/loops) | [Recording](https://web.microsoftstream.com/video/87cf1743-33a2-4953-8021-4f9478384366)
+* Intro to Shiny | [Resources](demos/shiny) | [Recording]()
+* Intro to brms (Bayesian) | [Resources](demos/brms) | [Recording](https://web.microsoftstream.com/video/c7ca7ed2-3a6b-420c-ba93-87c30994e7b0)
+* Control structure: loops + logic |  [Resources](demos/loops) | [Recording](https://web.microsoftstream.com/video/87cf1743-33a2-4953-8021-4f9478384366)
 * Intro to mixed effects models (lme4) |  [Resources](demos/linear-models) | [Recording](https://web.microsoftstream.com/video/d99d3ddf-9350-4591-9a97-9a62f2284be8)
 * Intro to linear models (lm) |  [Resources](demos/linear-models) | [Recording](https://web.microsoftstream.com/video/f224466c-7214-4830-925d-5791440dad8d)
 * Staying organized in R | [Recording](https://web.microsoftstream.com/video/b00b07fc-7895-4624-a02c-0437beda1849)
@@ -53,6 +55,9 @@ Download these materials by clicking the green **Code** button above. Or stay up
 **Models**
 
 * [Best practice & R packages for mixed models](https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html) (Ben Bolker)
+* [Bayesian visualization](https://arxiv.org/abs/1709.01449)
+* [Bayesian workflow](https://arxiv.org/abs/2011.01808)
+* [Statistical Rethinking (intro to Bayesian)](https://xcelab.net/rm/statistical-rethinking/) (Richard McElreath)
 
 **Maps**
 

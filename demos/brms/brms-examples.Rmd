@@ -1,0 +1,280 @@
+---
+title: Stan and BRMS introduction
+author: Fiona Seaton
+date: 2021-12-01
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Stan overview
+
+Stan is a platform used for Bayesian modelling. Unlike JAGS and BUGS the underlying MCMC algorithm is Hamiltonian - meaning it uses gradients rather than steps. Stan uses a variant of a No-U-Turn Sampler (NUTS) to explore the target parameter space and return the model output. 
+
+In practice, this means:
+
+* Better at exploring the model space
+* More likely to find issues with the model parameterisation
+* Quicker than JAGS/BUGS with more complex models
+* LOADS of [diagnostics](https://mc-stan.org/misc/warnings.html)
+
+Stan can be interfaced to from various software, the most commonly used and well supported is R but there are also options to interface from python or the command line. Within R there is the rstan package which does the direct interfacing with stan (along with StanHeaders), but there are also many helper packages for fitting stan models including rstanarm and brms. More recently people have written the cmdstanr package (not on CRAN) which provides a more lightweight interface to cmdstan which keeps up with Stan updates more quickly than rstan (currently several versions behind Stan). 
+
+```{r stan software ecosystem, echo = FALSE, message = FALSE}
+library(ggdag)
+library(dplyr)
+library(ggplot2)
+dagify(rstan ~ stan,
+       pystan ~ stan,
+       cmdstan ~ stan,
+       cmdstanr ~ cmdstan,
+       rstanarm ~ rstan,
+       brms ~ rstan + cmdstanr) %>% 
+  ggdag_classic(layout = "tree") + theme_dag()
+```
+
+There are also several other packages in R that work with stan models, such as bayesplot, loo, shinystan etc. 
+
+Both rstanarm and brms use formula notation in the style of lme4 in order to specify stan models. The main difference in between the two packages is that rstanarm has all of their models pre-specified and compiled into stan code while brms writes and compiles a new stan model each time. This means rstanarm can be a lot quicker than brms, but brms supports a wider range of model types. I use brms exclusively as I am a creature of habit and learnt it first, so that is what I will present here.
+
+# Installation
+A guide to installing rstan can be found online [here](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started), it is now much easier than it used to be - just install off CRAN as standard. It will take a few minutes, and afterwards you can check if everything is working okay by running the example model. To run stan models you also need the RTools version appropriate for your version of R (see [here](https://cran.r-project.org/bin/windows/Rtools/)), there is information given on the getting started page for rstan on how to check it is all working properly.
+
+```{r rstan install, eval = FALSE}
+install.packages("rstan", repos = "https://cloud.r-project.org/", dependencies = TRUE)
+
+# check 
+example(stan_model, package = "rstan", run.dontrun = TRUE)
+
+```
+
+Other packages that rely on rstan can be installed from CRAN/github as usual, I won't go into the details here.
+
+
+```{r package load, message = FALSE}
+library(brms)
+library(dplyr)
+library(ggplot2)
+theme_set(theme_classic())
+```
+
+
+# Simple model example
+
+I'm going to start by running a very simple mixed model here in order to demonstrate how easy fitting a model with brms can be. All the data here is from the agridat package, which is a package that holds several agricultural related datasets.
+
+```{r get and plot data}
+library(agridat)
+dat <- ilri.sheep
+ggplot(dat, aes(x = gen, y = weanwt)) +
+  geom_boxplot()
+```
+
+
+The brms model for this (with default priors, i.e. this is not a recommended workflow!):
+```{r simple brms model}
+mod1 <- brm(weanwt ~ gen - 1 + (1|ewe) + (1|ram), data = ilri.sheep)
+```
+```{r brms simple model plots}
+summary(mod1)
+plot(mod1, ask = FALSE, N = 4)
+```
+
+
+
+# Example suggested workflow
+When using these methods it is suggested that you think more about the prior assumptions that you are putting into the model. Several people within the stan community are now advocating a model building approach that follows several steps. I'm going to give a quick outline of the kind of steps that I follow when building models.
+
+First, prior predictive checks. Here we take the model structure and priors we are suggesting and evaluate the data structure that is implied by these priors.
+
+The data we will use is the impact of insecticide treatments on webworm counts in a beet field - there are four treatments:
+
+1. No treatment
+2. Contact spray
+3. Lead arsenate
+4. Both spray and lead arsenate
+
+(This data is from 1940, insecticides have moved on somewhat)
+
+```{r}
+ggplot(beall.webworms, aes(x = trt, y = y)) + geom_jitter()
+```
+
+First, define the model and find out what priors are automatically given by brms.
+
+```{r}
+get_prior(y ~ trt - 1 + (1 | block), data = beall.webworms,
+          family = poisson)
+```
+
+So we can see that the default is to have a student T prior on the intercept and random effect. Let's put a wide prior on b
+
+```{r}
+pr <- prior(normal(0,10), class = "b")
+```
+
+
+Now check by sampling the prior what kind of data this suggests:
+```{r}
+mod_pr <- brm(y ~ trt - 1 + (1 | block), data = beall.webworms,
+              family = poisson, prior = pr,
+              sample_prior = "only")
+```
+
+There is handy function within stan that allows you to see what the data suggested by the model looks like - pp_check. I will discuss this more later when we come to posterior checks but the default plots the density of the data and the model predicted data.
+
+```{r}
+pp_check(mod_pr, type = "dens_overlay", ndraws = 25)
+pp_check(mod_pr, type = "dens_overlay", ndraws = 25) +
+  scale_x_continuous(limits = c(0,20))
+```
+
+These plots show that our prior suggests that having counts of millions/billions is a possible outcome, which both seems unreasonable and could lead to issues with model convergence as the model fitting process has to explore these unlikely regions of model space. We can try this with tighter priors and see if it makes the model more sensible.
+
+```{r}
+pr <- prior(normal(0,1), class = "b") +
+  prior(student_t(3,0,1), class = "sd")
+```
+
+
+
+Now check by sampling the prior what kind of data this suggests
+```{r}
+mod_pr2 <- update(mod_pr, prior = pr, sample_prior = "only")
+```
+
+```{r}
+pp_check(mod_pr2, type = "dens_overlay", ndraws = 25)
+pp_check(mod_pr2, type = "dens_overlay", ndraws = 25) + 
+  scale_x_continuous(limits = c(0,20))
+```
+
+This prior seems really tight but actually allows for pretty high counts.
+Now we can run the model with data:
+
+```{r}
+mod_p <- update(mod_pr2, sample_prior = "no")
+```
+
+## Model checks!
+Statistics are printed by summary
+```{r}
+summary(mod_p)
+```
+Plot the variables to see the traceplots
+```{r}
+plot(mod_p, N = 3, ask = FALSE)
+```
+
+Alternatively, plot the rank overlay for the chains
+```{r}
+mcmc_plot(mod_p, type = "rank_overlay")
+```
+
+Now we can look at how well the model predicted the data using posterior predictive checks:
+```{r}
+pp_check(mod_p)
+```
+
+There are other types of posterior predictive checks supported by pp_check, described further in the documentation.
+
+To examine what the model estimates the effect of treatment to be upon worm count we can plot the predicted response for the different predictors.
+```{r}
+fixef(mod_p)
+plot(conditional_effects(mod_p))
+```
+
+For further investigations of treatment effects we could use the emmeans package which supports brms models, but I won't go into any details of that here.
+
+
+# Errors
+Stan returns many more potential errors and warnings than other MCMC software, in part because the fine-tuning of the NUTS algorithm offers more opportunities to pick up on issues with the exploration of model space. A full description of the different warnings is at https://mc-stan.org/misc/warnings.html but here's a quick summary of the ones I've commonly run into:
+
+* divergent transitions - the warning message will recommend increasing adapt_delta which may work, if not then the model structure needs to change
+* maximum treedepth exceeded - the warning message will recommend increasing max_treedepth (this is an efficiency concern, not a validity concern)
+* Rhat - will return a warning if above 1.05. Note that stan now uses a more robust rhat so this will pick up on issues where the old version may not have.
+* Effective sample size warnings for the bulk and tail of the distribution, will suggest running for more iterations but I've mostly run across these when chains haven't fully converged so fix that first  
+
+# More complicated models
+The above are quite simple examples, but brms can support many other types of model including those with missing data, censoring, multiple responses or non-linear models.
+
+
+## Multivariate models
+Modelling multiple response variables within brms can be done in one of two ways, if you have both response variables being predicted by the same predictors and having the same family you can use mvbind() to combine the two. Otherwise, you have to specify each formula within a bf() function then combine them together in the brm call. Fitting multiple models together allows you to model correlation between response variables and use information criteria or cross-validation upon the entire model.
+
+```{r multi model fit}
+dat <- australia.soybean %>%
+  mutate(YR = as.factor(year)) %>%
+  mutate_if(is.numeric, scale) %>%
+  na.omit()
+
+pr <- c(prior(normal(0,1), class = "b", resp = "protein"),
+        prior(normal(0,1), class = "b", resp = "oil"))
+
+mod_mv <- brm(mvbind(protein,oil) ~ year*loc,
+              data = dat, prior = pr)
+summary(mod_mv)
+```
+
+```{r multi model}
+plot(conditional_effects(mod_mv, effects = "year:loc", resp = "protein"))
+plot(conditional_effects(mod_mv, effects = "year:loc", resp = "oil"))
+
+```
+
+
+
+## Missing data
+Missing data can be imputed using the mi() notation, you have to specify which predictors you want the model to use in imputing the missing data. This example uses the ilri.sheep example from earlier.
+
+```{r missing data}
+bform <- bf(weanwt | mi() ~ gen + mi(weanage) + (1|ewe) + (1|ram)) +
+  bf(weanage | mi() ~ gen + sex + (1|ewe) + (1|ram)) + set_rescor(FALSE)
+fit <- brm(bform, data = ilri.sheep)
+summary(fit)
+plot(conditional_effects(fit, resp = "weanwt"), ask = FALSE)
+```
+
+
+
+
+## Non-linear models
+Non-linear models can also be fit within bf(), you have to specify that the model is non-linear (with nl = TRUE), and also specify the model parameters explicitly. If the model parameters are not dependent upon anything this takes the form of a param ~ 1 section, otherwise it can be a param ~ Variable section. We will use this to fit a logistic growth curve to some data on calf weights over time:
+
+```{r}
+ggplot(kenward.cattle, aes(x = day, y = weight, group = animal))+
+  geom_line() +
+  facet_wrap(~trt)
+```
+
+Generally reasonably informative priors are needed for this.
+
+```{r nonlinear model fit}
+prior1 <- prior(normal(325,25), nlpar = "b1") +
+  prior(normal(1,0.25), nlpar = "b2") +
+  prior(normal(50,10), nlpar = "b3") +
+  prior(normal(200,25), nlpar = "b4") +
+  prior(student_t(3,0,10), class = "sigma") +
+  prior(normal(0,10), nlpar = "b1", coef = "trtB") +
+  prior(normal(0,0.5), nlpar = "b2", coef = "trtB") +
+  prior(normal(0,5), nlpar = "b3", coef = "trtB") 
+fit1 <- brm(bf(weight ~ b1 / (1 + exp(b2 * (day - b3))) + b4, 
+               c(b1,b2,b3) ~ trt, b4 ~ 1, nl = TRUE),
+            data = kenward.cattle, prior = prior1, cores = 4,
+            control = list(adapt_delta = 0.9))
+summary(fit1)
+```
+
+```{r nonlinear model plots}
+plot(fit1)
+plot(conditional_effects(fit1), points = TRUE)
+```
+
+```{r}
+plot(conditional_effects(fit1, effects = "day", 
+                         conditions = make_conditions(kenward.cattle, "trt"),
+                         spaghetti = TRUE, ndraws = 100))
+```
+
