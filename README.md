@@ -11,7 +11,7 @@ Download these materials by clicking the green **Code** button above. Or stay up
 
 ## Past Demos
 
-* Intro to Shiny | [Resources](demos/shiny) | [Recording]()
+* Intro to Shiny | [Resources](demos/shiny) | [Recording](https://web.microsoftstream.com/video/16f4a128-73c3-4114-9443-072773d1aba4)
 * Intro to brms (Bayesian) | [Resources](demos/brms) | [Recording](https://web.microsoftstream.com/video/c7ca7ed2-3a6b-420c-ba93-87c30994e7b0)
 * Control structure: loops + logic |  [Resources](demos/loops) | [Recording](https://web.microsoftstream.com/video/87cf1743-33a2-4953-8021-4f9478384366)
 * Intro to mixed effects models (lme4) |  [Resources](demos/linear-models) | [Recording](https://web.microsoftstream.com/video/d99d3ddf-9350-4591-9a97-9a62f2284be8)
