@@ -78,6 +78,12 @@ Download these materials by clicking the green **Code** button above. Or stay up
 * [Learn Git in R Studio](https://afredston.github.io/learn-git/learn-git.html)
 * [Happy Git and Github with R](https://happygitwithr.com/index.html) (book - Jenny Bryan)
 
+**Shiny**
+
+* [R Studio Shiny gallery](https://shiny.rstudio.com/gallery/)
+* [R Studio Shiny build tips](https://shiny.rstudio.com/articles/build.html)
+* [Mastering Shiny](https://mastering-shiny.org/index.html) (book - Hadley Wickham)
+* [Shiny package page](https://rstudio.github.io/shiny/)
 
 **R workflow**
 

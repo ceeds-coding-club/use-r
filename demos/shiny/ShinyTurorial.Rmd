@@ -1,0 +1,384 @@
+---
+title: "⋆ *Shiny* ⋆"
+author: "Ruth Dunn"
+date: "08/12/2021"
+output: html_document
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## What is Shiny?
+
+Shiny is an R package. By using Shiny, we can build interactive web apps straight from R.
+
+This gallery (https://shiny.rstudio.com/gallery/) contains loads of cool examples. Here, you can view a load of apps and the corresponding code used to create them. It's an amazing resource.
+
+## Example: 'Seabird FMR Calculator'
+
+### Background
+
+I built an app around a model that I created for a paper (https://doi.org/10.1098/rsbl.2018.0190). We conducted a meta-analysis to identify the drivers of field metabolic rate (FMR) in seabirds during the breeding season.
+
+Our best model looked something like this:
+
+```r
+best_model <- MCMCglmm(log_FMR ~ log_Mass + Phase + Lat,
+                        random = ~animal + Sci_Name + Short_Location,
+                        pedigree = sptree)
+```
+
+Our response is log field metabolic rate (FMR). Our explanatory variables were log bird mass, phase of the breeding season and colony latitude. We also included random effects for phylogeny and colony.
+
+These were our results:
+
+```{r FMR results plots, echo=FALSE, warning = FALSE, message = FALSE}
+
+# Load packages
+
+library(openxlsx)
+library(ape)
+library(MCMCglmm)
+library(ggplot2)
+library(cowplot)
+
+# Load data
+
+data <- read.xlsx("C:/Users/ruth-/Dropbox/PhD/Project/Breeding Energetics - Meta Analysis/Data/Breeding FMR - Meta Analysis.xlsx", 1)
+
+data$animal <- data$Match_name
+data$Phase <- ordered(data$Phase, levels = c("Incubation", "Brood", "Creche"))
+
+tr <- read.tree("C:/Users/ruth-/Dropbox/PhD/Project/Breeding Energetics - Meta Analysis/Data/bird tree seabird tree.phy")
+
+sptree <- makeNodeLabel(tr, method = "number", prefix = "node")
+treeAinv<-inverseA(sptree, nodes="TIPS")$Ainv
+
+load(file = "C:/Users/ruth-/Dropbox/PhD/Project/Breeding Energetics - Meta Analysis/Outputs/Models/Revised/model4.rda")
+
+# Create plots
+
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+# FMR * Mass plot
+
+mass.plot <- ggplot() +
+
+    geom_line(mapping = aes(x = range(subset(data, Phase == "Incubation")$Mass_g),
+                          y = 10^(summary(model4)$solutions["(Intercept)","post.mean"]+
+                                    mean(data$Lat)*summary(model4)$solutions["Lat","post.mean"]+
+                                    log10(range(subset(data, Phase == "Incubation")$Mass_g))*
+                                    summary(model4)$solutions["log_Mass","post.mean"]+
+                                    summary(model4)$solutions["PhaseIncubation","post.mean"])), colour = cbPalette[4]) +
+  
+  geom_line(mapping = aes(x = range(subset(data, Phase == "Brood")$Mass_g),
+                          y = 10^(summary(model4)$solutions["(Intercept)","post.mean"]+
+                                    mean(data$Lat)*summary(model4)$solutions["Lat","post.mean"]+
+                                    log10(range(subset(data, Phase == "Brood")$Mass_g))*
+                                    summary(model4)$solutions["log_Mass","post.mean"])), colour = cbPalette[6]) +
+ 
+   geom_line(mapping = aes(x = range(subset(data, Phase == "Creche")$Mass_g),
+                          y = 10^(summary(model4)$solutions["(Intercept)","post.mean"]+
+                                    mean(data$Lat)*summary(model4)$solutions["Lat","post.mean"]+
+                                    log10(range(subset(data, Phase == "Creche")$Mass_g))*
+                                    summary(model4)$solutions["log_Mass","post.mean"]+
+                                    summary(model4)$solutions["PhaseCreche","post.mean"])), colour = cbPalette[7])
+
+mass.plot <- mass.plot  +
+  geom_point(mapping = aes(x = Mass_g, y = FMR, color = Phase, pch = Family), data = data) +
+  scale_colour_manual(values=cbPalette[c(4, 6, 7)]) +
+  scale_shape_manual(values = c(0:4, 6, 8, 15:17)) + 
+  scale_x_log10("log Mass (g)") +
+  scale_y_log10("log FMR (kJ/ day)")
+
+hello <- theme_bw() %+replace% theme(panel.grid.major = element_blank(),
+                                     panel.grid.minor = element_blank())
+
+theme_set(hello)
+
+# FMR * Lat plot
+
+lat.plot <- ggplot()  +
+  geom_point(mapping = aes(x = Lat, y = FMR, color = Phase, pch = Family), data = data) +
+  scale_colour_manual(values=cbPalette[c(4, 6, 7)]) +
+  scale_shape_manual(values = c(0:4, 6, 8, 15:17)) + 
+  xlab("Latitude (North/South)") +
+  scale_y_log10(" ")
+
+lat.plot <- lat.plot +
+  geom_line(mapping = aes(x = range(subset(data, Phase == "Incubation")$Lat),
+                          
+                          y = 10^(summary(model4)$solutions["(Intercept)","post.mean"]+
+                                    mean(data$log_Mass)*summary(model4)$solutions["log_Mass","post.mean"]+
+                                    (range(subset(data, Phase == "Incubation")$Lat))*
+                                    summary(model4)$solutions["Lat","post.mean"]+
+                                    summary(model4)$solutions["PhaseIncubation","post.mean"])), colour = cbPalette[4]) +
+  
+  geom_line(mapping = aes(x = range(subset(data, Phase == "Brood")$Lat),
+                          
+                          y = 10^(summary(model4)$solutions["(Intercept)","post.mean"]+
+                                    mean(data$log_Mass)*summary(model4)$solutions["log_Mass","post.mean"]+
+                                    (range(subset(data, Phase == "Brood")$Lat))*
+                                    summary(model4)$solutions["Lat","post.mean"])), colour = cbPalette[6]) +
+  
+  geom_line(mapping = aes(x = range(subset(data, Phase == "Creche")$Lat),
+                          
+                          y = 10^(summary(model4)$solutions["(Intercept)","post.mean"]+
+                                    mean(data$log_Mass)*summary(model4)$solutions["log_Mass","post.mean"]+
+                                    (range(subset(data, Phase == "Creche")$Lat))*
+                                    summary(model4)$solutions["Lat","post.mean"]+
+                                    summary(model4)$solutions["PhaseCreche","post.mean"])), colour = cbPalette[7])
+
+lat.plot <- lat.plot + theme_set(hello)
+
+##
+
+prow <- plot_grid(mass.plot + theme(legend.position = "none", plot.margin = unit(c(0, 0, 0.4, 0), "cm")),
+                  lat.plot + theme(legend.position = "none", plot.margin = unit(c(0, 0, 0.4, 0), "cm")),
+                  labels = c("a)", "b)"))
+legend <- get_legend(mass.plot)
+p <- plot_grid(prow, legend, rel_widths = c(3, 1))
+p
+
+```
+
+Our model showed  positive effects of bird mass and absolute latitude on field metabolic rate (FMR) in breeding seabirds. Phase of the breeding season also had an impact (incubation < brood < creche).
+
+### Shiny app
+
+We wanted to create something that could be used by whoever is interested, to generate estimates of seabird field metabolic rate. (These are useful for inferring the food consumption of populations of seabirds and that kind of thing.)  
+
+Using Shiny, we created a use-friendly web-based app: the 'Seabird FMR Calculator'.
+
+Our app uses inputs of bird mass, colony latitude and phase of the breeding period to calculate estimates and confidence intervals of field metabolic rate for any seabird population.
+
+Shiny apps can be hosted online (https://ruthedunn.shinyapps.io/seabird_fmr_calculator/) or within RMarkdown documents:
+
+``` {r Seabird FMR Calculator app, echo = FALSE, warning = FALSE, message = FALSE}
+library(shiny)
+
+shinyAppDir("myapp/",
+  options=list(
+    width="100%", height=800
+  )
+) 
+```
+
+## Building our first shiny app
+
+### Getting started
+
+1. Create a new, empty directory.
+
+2. Create a new `app.R` file within the new directory.
+
+3. Install and load the shiny package:
+
+``` {r load shiny}
+library(shiny)
+```
+
+4. Now we can start writing the code within the source file `app.R`
+
+### The UI
+
+The `ui`, or User Interface, is the HTML front that other humans can interact with.  
+
+The following code would allow us to create a super simple one (a page containing the words "Hello there"):
+
+``` r
+ui <- fluidPage(
+  "Hello there"
+) 
+```
+
+### The server logic
+To actually run the app we need to pass a function with two parameters (`input` and `output`) to the `server`.
+
+``` r
+server <- function(input, output){
+
+}
+```
+Currently this server function is empty, but we can use it to define the relationship between our inputs and outputs.
+
+
+### The shiny app
+
+The final function that we need is the `shinyApp` function. This function uses the `ui` object and the `server` function to build a Shiny app object.
+
+``` r
+shinyApp(ui, server)
+```
+
+### All together
+
+Combined, the code within our `app.R` script should look like this:
+
+``` {r run simple UI 1, warning = FALSE, message = FALSE}
+library(shiny)
+
+# Define the UI:
+ui <- fluidPage(
+  "Hello there"
+  )
+
+# Define the server logic:
+server <- function(input, output) {
+
+  }
+
+# Connect the two
+shinyApp(ui, server)
+```
+
+## Building a fancier shiny app
+
+This time we'll add some different elements to our `ui`:
+
+``` {r run simple UI 2.1, warning = FALSE, message = FALSE}
+library(shiny)
+
+# Define the UI:
+ui <- pageWithSidebar(
+
+  # App title
+  headerPanel("Hello there"),
+
+  # Sidebar panel for inputs
+  sidebarPanel(),
+
+  # Main panel for displaying outputs
+  mainPanel()
+)
+
+# Define the server logic:
+server <- function(input, output) {
+}
+
+# Connect the two
+shinyApp(ui, server)
+```
+
+We've added three new functions to the `ui`: `headerPanel`,  `sidebarPanel`, and  `mainPanel`. These define the different regions of the  `ui`. For now, I've just populated the  `headerPanel` with the same text as before.
+
+### Adding inputs
+
+Let's add some inputs to the `sidebarPanel`:
+
+``` r
+library(shiny)
+
+# Define the UI:
+ui <- pageWithSidebar(
+
+  # App title
+  headerPanel("Hello there"),
+
+  # Sidebar panel for inputs
+    # Slider input for number of observations
+  sidebarPanel(sliderInput("obs", 
+                "Number of observations:", 
+                min = 1,
+                max = 1000, 
+                value = 500)
+  ),
+
+  # Main panel for displaying outputs
+  mainPanel()
+)
+```
+
+Here, we have asked to create a slider from which to select the number of observations that we want to visualise.
+
+Let's plot the generated distribution in the `mainPanel`:
+
+``` r
+library(shiny)
+
+# Define the UI:
+ui <- pageWithSidebar(
+
+  # App title
+  headerPanel("Hello there"),
+
+  # Sidebar panel for inputs
+    # Slider input for number of observations
+  sidebarPanel(sliderInput("obs", 
+                "Number of observations:", 
+                min = 1,
+                max = 1000, 
+                value = 500)
+  ),
+
+  # Main panel for displaying outputs
+    # Show a plot of the generated distribution
+  mainPanel(
+    plotOutput("OutputPlot")
+))
+```
+
+Here, we have asked to create an output plot within the `mainPanel`.
+
+
+We then need to define the server logic to bring this all together.
+
+``` {r run simple UI 2.2, warning = FALSE, message = FALSE}
+library(shiny)
+
+# Define the UI:
+ui <- pageWithSidebar(
+
+  # App title
+  headerPanel("Hello there"),
+
+  # Sidebar panel for inputs
+    # Slider input for number of observations
+  sidebarPanel(sliderInput("obs", 
+                "Number of observations:", 
+                min = 1,
+                max = 1000, 
+                value = 500)
+  ),
+
+  # Main panel for displaying outputs
+    # Show a plot of the generated distribution
+  mainPanel(
+    plotOutput("OutputPlot")
+))
+
+# Define the server logic:
+
+server <- function(input, output) {
+  
+  output$OutputPlot <- renderPlot({
+    values <- rnorm(input$obs)
+    hist(values)
+  })
+  
+}
+
+# ShinyApp function
+shinyApp(ui, server)
+
+```
+
+This looks more like a real, slightly more useful app! We've got an app with a title, a side bar with a slider that we can adjust to change our inputs, and a main panel that displays a histogram, based on our inputs.
+
+In the `server` we ask for a vector of `values` to be created from a normal distribution, based on the number of observations (`obs`) that we input.
+
+We create a histogram (`hist`) of these values and call this `OutputPlot` (which is what we called for earlier within the `mainPanel` of our `Ui`).
+
+This is all wrapped in a `renderPlot` call which indicates that the output should be "reactive", i.e. it should automatically re-execute when the inputs change.
+
+## Flexibility
+
+There are a number of different ways to select inputs and to display outputs. We can also adjust the layout and appearance of these different items.
+
+## Resources
+
+* https://shiny.rstudio.com/articles/build.html
+* https://mastering-shiny.org/index.html
+* https://rstudio.github.io/shiny/tutorial/#welcome
