@@ -28,6 +28,7 @@ Download these materials by clicking the green **Code** button above. Or stay up
 * World maps | [Resources](demos/mapping) | [Video](https://web.microsoftstream.com/video/ff061266-b657-4391-92d7-f37db352c2bd)
 * Intro to ggplot2 | [Resources](demos/ggplot) | [Video](https://web.microsoftstream.com/video/539de994-abf1-429c-966d-2cb46f5bccaf)
 * Extending ggplot | [Resources](demos/ggplot_extensions/) | [Video](https://web.microsoftstream.com/video/7057bdea-f4b4-41a6-8f73-cb8500519044)
+* Themes | [Resources](demos/ggplot_extensions) | [Video](https://web.microsoftstream.com/video/9215e127-42f5-4fa9-8171-0c6a8ef8ab63)
 * Publication quality in base R | [Resources](https://github.com/smuel-tylor/Fast-Deactivation-of-Rubisco/blob/main/2_scripts_sun_shade_sun/Figure1_Multipanel_S_Vcmax_Vi_Vt.R)
 
 **Statistics**
