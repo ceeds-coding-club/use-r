@@ -2,7 +2,7 @@
 
 This repo stores the R demos and tutorials from our R community. Feel free to use and re-use - head to **[demos](demos)** for all materials. 
 
-**We meet on Teams every Wednesday at 12pm** to chat, demo useful R tricks, and debug our coding problems. If you're on Lancaster campus, we also meet in-person in the LEC 3 boardroom.
+**We meet in the LEC 3 Boardroom and on Teams every Wednesday at 12pm** to chat, demo useful R tricks, and debug our coding problems.
 
 *Message James Robinson (james.robinson AT lancaster.ac.uk) if you'd like to join the slack channel or get the Teams link.*
 
@@ -43,6 +43,7 @@ Download these materials by clicking the green **Code** button above. Or stay up
 * Intro to R-markdown | [Resources](demos/rmarkdown-html)
 * R-markdown in an R script | [Resources](demos/render-rscripts-rmd/) | [Video](https://web.microsoftstream.com/video/9c767fc9-1935-4d93-ad2b-9449da9fae39)
 * Web scraping | [Resources](demos/web-scraping)
+* Web scraping with Selenium & Python | [Resources](demos/scraping-py) | [Video]()
 * R-markdown for supplementary materials | [Resources](demos/rmarkdown-for-figures)
 * Intro to Shiny | [Resources](demos/shiny) | [Video](https://web.microsoftstream.com/video/16f4a128-73c3-4114-9443-072773d1aba4)
 
@@ -54,8 +55,10 @@ Download these materials by clicking the green **Code** button above. Or stay up
 
 **Tips & Tricks**
 
+* Keeping R & R Studio up-to-date | [Resources](demos/updatingR) | [Video](https://web.microsoftstream.com/video/41a084d1-2c02-449c-8b33-bf94197ed30f)
 * Bioconductor for bioinformatics | [Video](https://web.microsoftstream.com/video/5b485f83-55b0-426f-a4b4-70907fb3178b)
 * Show-and-tell (May 2021) | [Video](https://web.microsoftstream.com/video/f11fd5ba-fefc-4e52-bfd6-d79a471e133a)
+* Extracting text from images | [Resources](demos/TextExtract) | [Video](https://web.microsoftstream.com/video/c49a8776-5eeb-4f2a-aa94-4d199606c7a3)
 
 ## Useful R stuff
 

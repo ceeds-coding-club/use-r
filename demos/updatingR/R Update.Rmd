@@ -1,0 +1,61 @@
+---
+title: "Update R"
+author: "LBE"
+date: "25/05/2022"
+output: html_document
+---
+
+To update R, without losing all your packages, follow theses steps:
+[stolen with modifications from https://www.r-bloggers.com/2017/05/upgrade-r-without-losing-your-packages/]
+
+
+#1 - Build temp file with packages
+```{r}
+tmp <- installed.packages()
+installedpkgs <- as.vector(tmp[is.na(tmp[,"Priority"]), 1])
+save(installedpkgs, file="installed_old.rda") #saves on you working directory - make sure you know where that is
+```
+
+#2 - Install new version of R
+
+```{r}
+#to figure out what version you're currently on
+sessionInfo()
+```
+
+ON MAC: Download most recent version from https://cran.r-project.org 
+ON PC: R on a university computer should be installed from AppsAnywhere, not from CRAN. 
+
+From AppsAnywhere: "Due to issues with working from network drives for some features of R, on University machines a temporary location on the computers local storage will be created on launch, with a shortcut on the desktop for access. This will be the working directory when launching R Studio and so all files should be put here. On exit this data will backed up to a folder in your H: drive called 'r_working' within 'Documents'. Furthermore, if this location exists on your H: drive from a previous launch it will also copy the contents to the local storage ready for use again on subsequent launches."
+
+
+**Remember that updating RStudio is NOT the same thing as updating R! (You should probably do both though...)**
+
+#3 - Reload packages
+```{r}
+tmp <- installed.packages()
+load("installed_old.rda")
+installedpkgs.new <- as.vector(tmp[is.na(tmp[,"Priority"]), 1])
+missing <- setdiff(installedpkgs, installedpkgs.new)
+install.packages(missing) #WILL TAKE SEVERAL MINUTES (9min)
+update.packages(ask = FALSE) #CAN TAKE EVEN LONGER (17min)
+```
+
+#Bonus: New packages?
+
+*For PC `installr`
+*For Mac `UpdateR` [but notes that the update package function doesn't operate well outside of base R app.]
+
+#4 - Bioconductor packages
+if you use bioconductor, this will apparently work. I haven't tested it so feel free to edit if you use it and do any changes :)
+
+```{r}
+chooseBioCmirror()
+biocLite() 
+load("installed_old.rda")
+tmp <- installed.packages()
+installedpkgs.new <- as.vector(tmp[is.na(tmp[,"Priority"]), 1])
+missing <- setdiff(installedpkgs, installedpkgs.new)
+for (i in 1:length(missing)) biocLite(missing[i])
+```
+
