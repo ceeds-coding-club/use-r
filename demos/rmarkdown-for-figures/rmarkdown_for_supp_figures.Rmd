@@ -1,0 +1,47 @@
+---
+title: "rmarkdown_as_supplementary_figures"
+output:
+  pdf_document:
+  latex_engine: xelatex
+fig_width: 20
+html_document: default
+fig_height: 6
+word_document: default
+fontsize: 12pt
+
+---
+
+
+```{r, echo=F}
+## set up i to number figures automatically
+i = 0
+```
+
+
+
+```{r, out.width = "400px", echo=F,fig.align='center'}
+## This tells Rmd to include a graphic, here it's Figure_S1.pdf
+knitr::include_graphics("Figure_S1.pdf")
+i<-i+1
+```
+**Figure `r i`**
+I am a caption.
+
+\newpage
+```{r, out.width = "400px", echo=F,fig.align='center'}
+knitr::include_graphics("Figure_S2.pdf")
+i<-i+1
+```
+**Figure `r i`**
+I am a *italicized* caption.
+
+
+\newpage
+```{r, out.width = "400px", echo=F,fig.align='center', message=FALSE, warning=FALSE}
+## This runs 'create_Figure_S2.R', and displays the output - the ggplot figure
+source('create_Figure_S2.R')
+i<-i+1
+```
+
+**Figure `r i`**
+I am a figure sourced from the R script.

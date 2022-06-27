@@ -1,0 +1,224 @@
+---
+title: "Intro to tidyverse"
+author: "HBH"
+date: "26/05/2021"
+---
+
+#Tidyverse: a one stop shop for data exploration
+```{r}
+library(tidyverse)
+```
+
+
+#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
+#> ✔ ggplot2 3.3.2     ✔ purrr   0.3.4
+#> ✔ tibble  3.0.3     ✔ dplyr   1.0.2
+#> ✔ tidyr   1.1.2     ✔ stringr 1.4.0
+#> ✔ readr   1.4.0     ✔ forcats 0.5.0
+
+ggplot2:    Grammar for creating graphics
+purrr	R:    Functional programming
+tibble:	    Modern and effective table system
+dplyr:	    Grammar for data manipulation
+tidyr:	    Set of functions to create tidy data
+stringr:	  Function set to work with characters
+readr:    	An easy and fast way to import data
+forcats:	  Tools to easily work with factors
+
+
+##The grammar
+magrittr introduces a modern grammar to R (inherited from other languages) in the form of a pipe %>% 
+
+```{r}
+mean(1:5)
+```
+
+```{r}
+1:5 %>% mean()
+```
+
+
+##The vocabulary of dplyr
+dplyr introduces a new vocabulary to the R language with a set of useful tools
+
+```{r}
+mtcars
+```
+
+###select()
+```{r}
+mtcars %>% select(mpg:disp)
+```
+
+###mutate()
+```{r}
+mtcars %>% select(mpg:cyl) %>% 
+  mutate(mpg_per_cyl = mpg / cyl) 
+```
+
+###filter()
+```{r}
+mtcars %>% select(mpg:cyl) %>% 
+  mutate(mpg_per_cyl = mpg / cyl) %>% 
+  filter(cyl == 8) 
+```
+
+
+###arrange()
+```{r}
+mtcars %>% select(mpg:cyl) %>% 
+  mutate(mpg_per_cyl = mpg / cyl) %>% 
+  filter(cyl == 8) %>% 
+  arrange(mpg_per_cyl) 
+```
+
+
+####Excercise 1
+Which car has the lowest horsepower (hp) to weight ratio (wt)?
+```{r}
+
+
+```
+
+
+
+
+####Shortcut your pipe! 
+Tools > Modify Keyboard Shortcuts > Insert Pipe Operator (use a semi-colon)
+
+
+###summarise()
+Reducing your data: 
+
+What's the average quarter mile time (qsec) of 4, 6, and 8 cylinder engine cars
+In base R...
+```{r}
+#Simple mean
+mean(mtcars$qsec)
+#Mean by groups
+aggregate(mtcars$qsec, list(mtcars$cyl), FUN = mean)
+```
+In tidyverse!!!
+```{r}
+#Simple mean
+mtcars %>% summarise(mean = mean(qsec))
+#Mean by groups
+mtcars %>% group_by(cyl) %>% summarise(mean = mean(qsec))
+#Add lots of arguments and functions!
+mtcars %>% group_by(cyl, vs) %>% 
+  summarise(mean = mean(qsec), 
+            min  = min(qsec), 
+            max  = max(qsec))
+```
+
+###count()
+```{r}
+mtcars %>% group_by(cyl, vs) %>% 
+  count()
+```
+
+###join
+```{r}
+full_join(
+  
+  mtcars %>% group_by(cyl, vs) %>% 
+  summarise(mean = mean(qsec), 
+            min  = min(qsec), 
+            max  = max(qsec))
+  ,
+  
+  mtcars %>% group_by(cyl, vs) %>% 
+  count()
+  
+  , by = c("cyl", "vs")
+)
+```
+
+
+
+
+#Wrangling the tidyverse 
+
+##operators
+```{r}
+mtcars %>% filter(cyl >= 6)
+mtcars %>% filter(! cyl == 4)
+mtcars %>% filter(cyl <= 8 & cyl > 4)
+mtcars %>% filter(cyl == 6 | cyl  == 8)
+mtcars %>% filter(cyl %in% c(6,8))
+```
+##stringr
+```{r}
+mtcars %>% rownames_to_column(var = "cars") %>% 
+  filter(str_detect(cars, pattern = "Mazda"))
+```
+
+```{r}
+mtcars %>% rownames_to_column(var = "cars") %>% 
+  mutate(cars = str_replace(cars, pattern = "Mazda", replacement = "Mazzy"))
+```
+
+
+##forcats
+```{r}
+mtcars %>% mutate(cyl = as.factor(cyl))
+```
+```{r}
+mtcars %>% mutate(cyl = as.factor(cyl)) %>% 
+  pull(cyl) %>% 
+  fct_count()
+```
+```{r}
+mtcars %>% mutate(cyl = factor(cyl)) %>% 
+  mutate(cyl = fct_lump(cyl, n = 1))
+```
+
+##pivots
+```{r}
+mtcars %>% rownames_to_column(var = "cars") %>% 
+  filter(str_detect(cars, pattern = "Merc")) %>% 
+  group_by(cars, cyl) %>% 
+  summarise(mean = mean(qsec)) %>% 
+  pivot_wider(names_from = cyl, values_from = mean)
+
+
+```
+
+#Plotting
+```{r}
+library(ggrepel)
+mtcars %>% rownames_to_column(var = "cars") %>% 
+  filter(str_detect(cars, pattern = "Merc")) %>% 
+  ggplot(aes(y = mpg, x = wt)) +
+  geom_point() +
+  geom_text_repel(aes(label = cars))
+```
+
+```{r}
+library(patchwork)
+
+p1 = mtcars %>% rownames_to_column(var = "cars") %>% 
+  filter(str_detect(cars, pattern = "Merc")) %>% 
+  mutate(cyl = as.factor(cyl)) %>% 
+  ggplot(aes(y = mpg, x = wt, col = cyl)) +
+  geom_point() +
+  geom_text_repel(aes(label = cars)) 
+
+p2 = mtcars %>% rownames_to_column(var = "cars") %>% 
+  filter(str_detect(cars, pattern = "Merc")) %>% 
+  mutate(cyl = as.factor(cyl)) %>% 
+  group_by(cyl) %>% 
+  summarise(mean = mean(qsec),
+            se = sd(qsec) / sqrt(n())) %>% 
+  ggplot(aes(x = cyl, y = mean, col = cyl)) +
+  geom_pointrange(aes(ymin = mean - se, ymax = mean + se))
+
+p1 + p2
+```
+
+
+
+#Resources
+https://r4ds.had.co.nz/index.html
+https://www.rstudio.com/resources/cheatsheets/
+

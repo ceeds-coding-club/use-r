@@ -1,0 +1,122 @@
+---
+title: "Parkrun Results"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+```
+
+# Install Packages
+
+Run the lines below in the console and install miniconda when prompted. rvest is a tidyverse package for scraping information from the web. reticulate is a package that allows you to use both Python (miniconda) and R within one Rmd document.
+
++ `install.packages("tidyverse", "rvest", "lubridate", "reticulate")`
++ `reticulate::py_install("selenium")`
+
+Navigate to the link below and install chrome driver, ensure the verion number of this driver matches the version number of your own intslaled chrome browser. 
+
++ Install Chrome Driver `https://chromedriver.storage.googleapis.com/index.html?path=102.0.5005.61/`
+  + And Save the  file in your working directory
+
+
+
+
+# Load Librarys
+```{r, message=FALSE}
+library(tidyverse)
+library(rvest)
+library(lubridate)
+library(reticulate)
+```
+
+# rvest
+
+rvest should work using just the code below.
+
+More info here https://rvest.tidyverse.org/
+
+xpath for a table can be copied from the source code for a website the inspect element on chrome or via the F12 key.
+
+```{r}
+wales_rugby <- read_html("https://en.wikipedia.org/wiki/List_of_Wales_national_rugby_union_team_results")
+
+wales_rugby %>%
+  html_nodes(xpath='//*[@id="mw-content-text"]/div[1]/table[2]') %>%
+  html_table() -> WalesResults
+
+WalesResults
+```
+# What to do if a website is using a scraping bloacker
+
+```{r eval=FALSE}
+read_html('https://www.parkrun.org.uk/parkrunner/5076650/all/') %>%
+  html_nodes(xpath='//*[@id="results"]') %>%
+  html_table() -> Results
+
+```
+
+The code above gives this error: `Error in open.connection(x, "rb") : HTTP error 403.` Which is something to do with trying to access the data from the website from a "headless browser". 
+
+You can either save the html code as a .html file from within a browser manually. Save the .html to your working directory and then read that file in. However this is not very repeatable/reproducible. 
+
+Another option is to use the selenium package from within python in combination with Chrome driver to open a browser, navigate to the page, save that page as a .html file to your wokring directory which you can then open into your r environment.
+
+
+# Python Code
+
+```{python, message=FALSE}
+from selenium import webdriver
+import time
+
+# start web browser
+driver=webdriver.Chrome(executable_path="ChromeDriver/chromedriver")
+driver.implicitly_wait(0.5)
+
+
+#launch URL
+driver.get("https://www.parkrun.org.uk/parkrunner/5076650/all/")
+html = driver.page_source
+time.sleep(2)
+
+# close web browser
+driver.close()
+
+# Save html as .html
+file = open("ParkrunResults.html","w")
+file.write(html)
+file.close()
+
+```
+
+# R Code
+
+Once you have the page page saved as a .html file in your working directory you can load that into the rvest `read_html()`command by specifying the file path rather than a url. 
+
+The xpath can be copied from within the source code of the document. More information on this can be found here `https://www.testgrid.io/blog/xpath-in-chrome-for-selenium/`
+
+```{r}
+
+read_html('ParkrunResults.html') %>%
+  html_nodes(xpath='//*[@id="results"]') %>%
+  html_table() -> Results
+
+Results[3]
+```
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,197 @@
+---
+title: "Web Scraping Demo"
+author: "Eva Maire"
+date: "27/01/2021"
+output: ioslides_presentation
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 12px;
+}
+code.r{
+  font-size: 10px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library(ggmap)
+library(ggplot2)
+library(ggrepel)
+library(knitr)    
+library(png) 
+library(cowplot)
+library(magick) 
+library(rvest)
+library(xml2)
+```
+## Web Scraping Examples in R
+
+```{r echo=F}
+
+p1 <- ggdraw() + draw_image("/Users/maire/Documents/Rmarkdown/webscraping/1website.png", scale = 1.1)
+p2 <- ggdraw() + draw_image("/Users/maire/Documents/Rmarkdown/webscraping/2engineering.png", scale = 1.1)
+p3 <- ggdraw() + draw_image("/Users/maire/Documents/Rmarkdown/webscraping/3file.png", scale = 1)
+
+plot_grid(NULL, p1, NULL,p2, NULL, p3,
+  nrow = 1, rel_widths = c(0.25,1, 0.25, 1, 0.25, 1))
+```
+
+<center><font size="10">
+What? Why? How?
+
+</center></font>
+
+## What? Why? How?
+**What?**  
+Web Scraping = Web data extraction 
+
+**Why?**  
+To gather (scrap) data from the internet if: 
+
+- data cannot be downloaded directly;
+- data are generated instantly (based on user's preference for example) 
+
+**How?**  
+Let's try (basic example)
+
+## Web Pages: the HTML language
+
+HTML is behind everything on the web.  
+
+Briefly understand syntax rules, browser presentation, tags and attributes to parse HTML and scrape the web for the information we need.  
+
+- A webpage is **NOT** an HTML document. Basically, an HTML document can be opened using a text editor.
+
+- The HTML code tells a browser how to show a webpage (what goes into a headline, what goes into a text, etc.). We need to **BRIEFLY** understand the underlying marked up structure to understand how to scrape it.
+
+## Web Pages: the HTML language
+
+Example here with Lancaster University website:  
+
+```{r eecho = TRUE, out.width="100%",echo=F}
+include_graphics("/Volumes/EM2T/Lancaster/web_scraping/LU.png")
+```
+
+## HTML elements and tags
+Each of those **TAGS** have their own unique property:  
+- **title** tag helps a browser render the title of a web page  
+- **body** tag defines the body of an HTML document
+
+```{r, echo = TRUE, out.width="40%",echo=F}
+include_graphics("/Volumes/EM2T/Lancaster/web_scraping/example_code.png")
+```
+
+All you need to keep in mind is that a webpage is structured with the help of HTML tags, and identifying these tags can help you locate and extract the information easily!
+
+
+## Scraping information from Wikipedia using R
+
+In this example, I’ll show you how to retrieve information from the ranking of universities in the UK’s Wikipedia page  
+
+<font size="4">
+https://en.wikipedia.org/wiki/Rankings_of_universities_in_the_United_Kingdom 
+</font>
+
+
+## Quick rvest tutorial
+
+```{r, echo = TRUE, out.width="80%",echo=F}
+include_graphics("/Volumes/EM2T/Lancaster/web_scraping/UKuniversities.png")
+```
+
+## Quick rvest tutorial
+
+There are several steps involved in using rvest which are conceptually quite straightforward:  
+
+- Identify a URL to be examined for content
+- Inspect the HTML code to identify the "selector". This will be a paragraph, table, hyper links, images, etc. 
+- Load rvest
+- Use read_html to "read" the URL
+- Pass the result to html_nodes to get the selectors identified in step number 2
+- Get the text or table content
+
+
+## Steps 1 & 2 
+
+```{r echo=T}
+# Step 1 - Grab the url
+url <- "https://en.wikipedia.org/wiki/Rankings_of_universities_in_the_United_Kingdom"
+
+# Step 2 - Inspect the HTML code
+
+```
+
+## Steps 3 & 4
+```{r echo=T}
+# Step 3 - Load rvest library
+
+library(rvest)
+url <- "https://en.wikipedia.org/wiki/Rankings_of_universities_in_the_United_Kingdom"
+
+# Step 4 - Read the html code
+
+html <- read_html(url)
+html
+```
+
+## Step 5 
+Get some other types of HTML objects with appropriate **TAGS**  
+
+Let’s get the paragraphs
+
+```{r echo=T}
+# Identify text paragraphs with tag 'p'
+paragraphs <- read_html(url) %>% 
+              html_nodes("p")
+
+# Then we might want to actually parse out those paragraphs into text:
+paragraphs <- read_html(url) %>% 
+              html_nodes("p") %>% 
+              html_text()
+paragraphs[1:3]
+```
+
+## Step 5  
+
+Let’s get the hyperlinks to other pages
+```{r echo=T}
+# Extract the URLs
+url_ <- read_html(url) %>%
+        html_nodes("a") %>%
+        html_attr("href")
+url_
+```
+
+## Step 5  
+
+or the tables
+```{r echo=T}
+tables <- read_html(url) %>% 
+          html_nodes("table") 
+tables
+```
+
+## Step 6 - Extract the first table
+
+```{r echo=T}
+ranking <- read_html(url)  %>% 
+            html_nodes("table") %>% `[[`(1) %>% 
+            html_table(fill = TRUE)
+```
+
+```{r, echo = TRUE, out.width="80%",echo=F}
+include_graphics("/Volumes/EM2T/Lancaster/web_scraping/ranking.png")
+```
+
+## Take Home Messages
+
+- Web scraping is quite straightforward
+- It needs a bit a practice but many resources are available online
+- Give it a try! 
+

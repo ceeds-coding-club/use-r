@@ -1,0 +1,299 @@
+---
+title: "Intro to ggplot"
+author: "LBE"
+date: "09/02/2022"
+output: html_document
+---
+
+# Welcome to ggplot!
+* Based on tidyverse principles
+* Iterative principles, layering data and graphical themes
+* Uses a set Grammar of Graphics:
+* **Data** is **mapped** to aesthetics
+   - **Layer**s are **geom**etric elements, and **stat**istical transformations
+   - **scale**s map values to geometric space
+   - **coord**inate systems decsribed how data coordinates are mapped to a graphical plane
+   - **Facet**s breaks up and displays subsets of data
+   - **Theme**s control details about the display, like font size etc. 
+
+# Libraries
+```{r, message=FALSE} 
+packages = c('tidyverse',
+            'patchwork',
+            'ggpubr')
+
+load.pack = lapply(packages,require,char=T)
+load.pack
+
+``` 
+
+# Data
+Today's data: a collection of dispersal and self-recruitment data for anemonefish
+```{r}
+load("./PublicationFigures/NemoDatabase.Rdata")
+```   
+
+
+Let's start with some data wrangling
+```{r}
+nemo_dat = nemo %>% 
+  mutate(Species = paste("A.", Species),
+         Range_disp = as.character(Range_disp),
+         PLD = as.character(PLD),
+         Mkr_n = as.character(Mkr_n)) %>% 
+  mutate(SR_mean = ifelse(is.na(SR_mean), (SR_min + SR_max) / 2, SR_mean)) %>% 
+  mutate(Method = str_replace(Method, "IBD", "Genetic structure"),
+         Method = str_replace(Method, "Assignment", "Assignment tests"),
+         Method = factor(Method, levels = c("Parentage", "Assignment tests", "Genetic structure", "Otolith tagging"))) %>% 
+  mutate(Range_disp.1 = as.character(Range_disp)) %>% 
+  separate(Range_disp.1, c("min_Range", "max_Range"), sep = "-") %>% 
+  mutate(min_Range = as.numeric(min_Range),
+         max_Range = as.numeric(max_Range)) %>% 
+  mutate(Adults = replace_na(Adults, 0),
+         Juveniles = replace_na(Juveniles, 0)) %>% 
+  mutate(Specis = as.factor(Species))
+nemo_dat
+```
+
+# Fig 1. 
+Our first figure!
+
+Every ggplot pot has three main components:
+
+* **data**
+* **aes**thetic mappings between data & visual properties
+* At least one **layer** that describes how each observation is rendered, usually a **geom** functions
+
+```{r}
+ggplot(data = nemo_dat, aes(x = Publication_year, fill = Method)) +
+  geom_histogram()
+```
+
+## p1
+```{r}
+p1 <- ggplot(nemo_dat, aes(x = Publication_year, fill = Method)) +
+  geom_histogram(binwidth = 1, col = "white", size = 1) +
+  scale_fill_manual(values = c("#4e79a7", "#26A69A", "#edc948",  "#f28e2b")) +
+  labs(x = "Publication year", y = "Number of studies") +
+  scale_y_continuous(expand = c(0,0), limits = c(0,5.5), breaks = c(0,2,4,6)) #
+p1
+```
+
+```{r}
+p1 = p1 +
+  theme_classic()
+p1
+```
+
+```{r}
+p1 +
+  theme_classic() + 
+  theme(axis.line = element_blank(),
+        panel.border = element_rect(size = 1, fill = "transparent"),
+        legend.title = element_blank(),
+        legend.position = c(.15,.8),
+        plot.margin = margin(.2,.1,.1,.4, unit = "cm"))
+```
+
+```{r}
+Fig2_theme =  theme_classic() + 
+  theme(axis.line = element_blank(),
+        panel.border = element_rect(size = 1, fill = "transparent"),
+        legend.title = element_blank(),
+        legend.position =  "none",
+        legend.background = element_rect(fill = "transparent"),
+        plot.margin = margin(.2,.1,.1,.4, unit = "cm")) 
+### add elements
+
+p1 = p1 + Fig2_theme
+p1
+```
+
+## p2
+```{r}
+my_species = c("A. percula", "A. polymnus", "A. chrysopterus", "A. clarkii", 
+  "A. perideraion", "A. bicinctus", "A. frenatus", "A. melanopus", "A. ocellaris", "A. latezonatus",  
+  "A. omanensis", "A. mccullochi", "A. akallopisos", "A. sandaracinos")
+
+p2 = ggplot(nemo_dat %>% mutate(Species = factor(Species, levels = rev(my_species))), 
+       aes(x = Species, fill = Method)) +
+  geom_histogram(stat = "count", width = 1, col = "white", size = 1) +
+  scale_fill_manual(values = c("#4e79a7", "#26A69A", "#edc948",  "#f28e2b")) +
+  labs(x = "", y = "Number of studies") +
+  scale_y_continuous(expand = c(0,0), breaks = c(2,4,6,8), limits = c(0, 10)) +
+  coord_flip() + ## flip it!
+  Fig2_theme +
+  theme(axis.text.y = element_text(face = "italic"), #edit axis
+        legend.position = c(.6,.2))
+
+p2
+```
+
+## p3
+```{r}
+p3 = ggplot(nemo_dat, aes(x = Time_ya, fill = Method)) +
+  geom_histogram(binwidth = 1, col = "white", size = 1) +
+  labs(x = "Study duration", y = "Number of studies") +
+  scale_fill_manual(values = c("#4e79a7", "#26A69A", "#edc948",  "#f28e2b")) +
+  scale_y_continuous(expand = c(0,0), limits = c(0,14), breaks = c(0,3,6,9,12)) +
+  scale_x_continuous(breaks = c(0,2,4,6,8,10)) +
+  Fig2_theme
+
+p3
+```
+
+## patchwork
+```{r}
+p1 + p2 
+p1/p3
+p2 + p1/p3
+```
+
+
+
+## ggpubr
+```{r}
+ggarrange(p1,p2, align = "h")
+ggarrange(p1,p3, nrow = 2, align = "v")
+ggarrange(p2, 
+          ggarrange(p1,p3, nrow = 2), ncol = 2)
+```
+
+Shared legends
+```{r}
+ggarrange(p2, 
+          ggarrange(p1,p3, nrow = 2, legend = "none"), ncol = 2, common.legend = TRUE, legend = "top" )
+```
+
+
+
+Panel labels
+```{r}
+right.panel = ggarrange(p1,p3, nrow = 2, legend = "none", 
+                        labels = c("b", "c"), 
+                        font.label = list(size = 10, color = "black", face = "bold", family = "Helvetica", position = "top"))
+
+ggarrange(p2, right.panel, ncol = 2,
+          common.legend = TRUE, legend = "bottom",
+          labels = c("a"), 
+          font.label = list(size = 10, color = "black", face = "bold", family = "Helvetica", position = "top"))
+```
+
+Widths and heights
+```{r}
+Fig2 = ggarrange(p2, right.panel, ncol = 2, widths = c(.7,1), 
+                 common.legend = TRUE, legend = "bottom",
+                 labels = c("a"), 
+                 font.label = list(size = 10, color = "black", face = "bold", family = "Helvetica", position = "top"))
+Fig2
+```
+
+I love it! 
+```{r}
+ggsave("./PublicationFigures/figures/Fig2.1.pdf", plot = Fig2, width = 174, height = 100, units = "mm", dpi = 600)
+```
+
+
+# Fig 3. Complex figures
+## a. Insets
+
+```{r}
+p3 + annotation_custom(
+    ggplotGrob(p1), 
+    xmin = 2, xmax = 11, ymin = 7, ymax = 13.5)
+```
+
+## b. annotations
+```{r}  
+p3 + annotate("segment", x = 0, xend = 3, y = 9, yend = 5, colour = "black", size = 1) +
+  annotate("text", x = 3.5, y = 5, label = "Most studies are short", 
+           colour = "black", size = 5, fontface = 2, family = "Helvetica", hjust = 0)
+```
+
+## c. difficult text
+```{r}
+#text
+p1 + labs(x = expression(lots~of~text))
+#Symbols
+p1 + labs(x = expression("SR" %+-% "1sd" ))
+#superscript
+p1 + labs(x = expression(ha.m^2))
+#multiple lines
+p1 + labs(x = expression(atop(Two~lines, mean^super %+-% "1sd")))
+```
+
+## d. text justification
+```{r}
+td <- expand.grid(
+    hjust=c(0, 0.5, 1),
+    vjust=c(0, 0.5, 1),
+    angle=c(0, 45, 90),
+    text="text"
+)
+
+ggplot(td, aes(x=hjust, y=vjust)) + 
+    geom_point() +
+    geom_text(aes(label=text, angle=angle, hjust=hjust, vjust=vjust)) + 
+    facet_grid(~angle) +
+    scale_x_continuous(breaks=c(0, 0.5, 1), expand=c(0, 0.2)) +
+    scale_y_continuous(breaks=c(0, 0.5, 1), expand=c(0, 0.2))
+```
+
+
+## e. difficult legends
+```{r}
+#Edit the legend
+p3.legend = p3 +
+  theme(legend.background = element_rect(fill = "transparent"),
+        legend.text = element_text(face = "italic", size = 10),
+        legend.title = element_blank(),
+        legend.position = c(.6,.8),
+        legend.spacing.x = unit(.5, 'cm'),
+        legend.spacing.y = unit(.5, 'cm'),
+        legend.key = element_rect(colour = "white",size = 2),
+        legend.key.size = unit(.6, "cm")) +
+  guides(fill=guide_legend(nrow=2, byrow=FALSE))
+
+p3.legend
+
+#Extract the legend
+legend = as_ggplot(get_legend(p3.legend))
+
+#plot the legend like a plot 
+ggarrange(p3, legend, nrow = 2)
+```
+
+## f. facetting
+```{r}
+p3 + facet_wrap(~Method) +
+  theme(strip.background = element_blank(),
+        strip.text = element_blank()) +
+  geom_text(data = data.frame(Method = c("Parentage", "Assignment tests", "Genetic structure", "Otolith tagging")), 
+            aes(x = 10, y = 12, label = Method), hjust = 1)
+```
+
+```{r}
+data("ToothGrowth")
+
+ToothGrowth = ToothGrowth %>% 
+  mutate(dose = as.factor(dose))
+p <- ggplot(ToothGrowth, aes(x = dose, y = len, fill = dose)) +
+  geom_boxplot() +
+  theme_classic()
+p
+ 
+# Add p-values comparing groups
+# Specify the comparisons you want
+my_comparisons <- list( c("0.5", "1"), c("1", "2"), c("0.5", "2") )
+p + stat_compare_means(comparisons = my_comparisons)+ # Add pairwise comparisons p-value
+  stat_compare_means(label.y = 50)                   # Add global p-value 
+```
+
+# Playing with colour
+*Personalised colour palettes
+*library(wesanderson)
+*https://coolors.co/
+*https://medialab.github.io/iwanthue/
+
+
+
