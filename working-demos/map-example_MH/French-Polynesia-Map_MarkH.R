@@ -7,7 +7,7 @@ library(ggpubr)
 
 
 #Read in co-ordinates (Moorea & Raiatea sites)
-sites <- read.csv("Data/Site_coordinates.csv")
+sites <- read.csv("working-demos/map-example_MH/Site_coordinates.csv")
 head(sites)
 
 
@@ -85,6 +85,23 @@ ggarrange(Moo, Rai)
 # others...?
 
 
+## james robinson trying an R Natural Earth version with sf
+library(rnaturalearthhires) # devtools::install_github("ropensci/rnaturalearthhires")
+library(sf)
 
+# hi res countries polygons
+world <- ne_countries(scale = "large", returnclass = "sf")
+# plot polygons, add points on top
+ggplot(data=world) +
+    geom_sf() + 
+    geom_point(data = sites, aes(x = longitude, y = latitude)) +
+    ggrepel::geom_text_repel(data = sites, aes(x = longitude, y = latitude, label = years), size=2, seed=42) +
+    annotate('text', x = -149.5, y = -17.1, label='Moorea') +
+    annotate('text', x = -151, y = -16.5, label='Raiatea') +
+    coord_sf(
+        crs = 4326, # https://epsg.io/4326 (aka the classic)
+        xlim = c(-152, -149), # limits are taken from eyeballing the sites df
+        ylim = c(-18, -16)  # of EPSG:3460
+    ) + ggthemes::theme_map()
 
 ##### END OF SCRIPT #####
