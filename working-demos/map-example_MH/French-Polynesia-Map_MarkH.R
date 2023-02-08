@@ -10,7 +10,6 @@ library(ggpubr)
 sites <- read.csv("working-demos/map-example_MH/Site_coordinates.csv")
 head(sites)
 
-
 # Plot with Google maps layer
 
 #You need a Google API key (which is free). Instructions on how to get one
@@ -87,10 +86,12 @@ ggarrange(Moo, Rai)
 
 ## james robinson trying an R Natural Earth version with sf
 library(rnaturalearthhires) # devtools::install_github("ropensci/rnaturalearthhires")
+library(rnaturalearth) #This is required too => devtools::install_github("ropensci/rnaturalearth")
 library(sf)
 
 # hi res countries polygons
 world <- ne_countries(scale = "large", returnclass = "sf")
+
 # plot polygons, add points on top
 ggplot(data=world) +
     geom_sf() + 
