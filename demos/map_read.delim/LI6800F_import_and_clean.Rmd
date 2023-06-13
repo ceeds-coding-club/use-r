@@ -1,0 +1,211 @@
+---
+title: "LI-6800F import and clean"
+author: "Samuel Taylor"
+date: "2023-05-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Reading formatted text files
+
+This demo is designed to show one approach to reading and compiling instrument data files.
+
+The approach taken is to read in data from a set of original files and pull these together into one object that can subsequently be used in analysis
+
+Since there are multiple files to be imported, and each file needs to be reformatted to create a useful 'tidy' data object, it makes sense to create a function that handles import of one file then use mapping/apply functions to run this across a list of files.
+
+This function reads the relevant pieces of information from the file, then stitches them together to create a tidy object
+
+I had to implement a fix here to identify which rows to skip because different files has slightly different sized headers. For this reason, ultimately, importing once and then manipulating the object worked better than trying to read in specific lines from the file and recompile them
+
+```{r import function, echo = TRUE}
+
+read_LI6800F <- function(file){
+  all <- read.delim(file, header = FALSE, encoding = "UTF-8",
+                    #the weird file format forces me to fix col.names
+                    #after working it out from the text file
+                    col.names = paste0("C", c(1:282))
+  )
+  data_row <- as.numeric(row.names(all[all[ , 1] == "[Data]", ]))
+  #the lines below make and tidy up a single header that combines info from
+  # two lines in the file
+  cnms1 <- all[data_row + 2, ]
+  cnms2 <- all[data_row + 3, ]
+  cnms <- gsub("_\\>", "",
+               gsub("\\.{2,}", ".", 
+                    make.names(
+                      gsub(" ", "_", paste(cnms1, cnms2, sep = "_")
+                      )
+                    )
+               )
+  )
+
+  use <- all[c((data_row + 4):nrow(all)), ]
+  names(use) <- cnms
+  row.names(use) <- c(1:nrow(use))
+  #remove duplicated columns that were included in the original file
+  use <- use[ , !duplicated(names(use))]
+  use
+}
+
+#two examples with slightly different modes of commenting
+read_LI6800F("2023-05-30-1228_heat stress cowpea cabinet 2")[ , c(1:6)]
+
+
+read_LI6800F("2023-05-30-1529_cowpea heat stress cabinet 1")[ , c(1:6)]
+
+
+```
+
+This output has some rows in it that are helpful for knowing what the treatments were, but should be embedded in the data, so they need to be pivoted in.
+
+Before the data can be pivoted, a loop is applied to generate an `id_cols`
+
+```{r pivoting 1, echo = TRUE}
+library(tidyverse)
+
+pivot_comments <- function(df){
+  df$obs_id <- replace(df$obs, grepl("\\d{2}:\\d{2}:\\d{2}", df$obs), NA)
+  df$is_comment <- ifelse(is.na(df$obs_id), "comment", "observation")
+  for (i in 1:nrow(df)){
+         if(is.na(df[i, "obs_id"])){
+             df[i, "obs_id"] <- min(df[i:nrow(df), "obs_id"], na.rm = TRUE)
+             }
+  }
+  df
+}
+
+c2 <- read_LI6800F("2023-05-30-1228_heat stress cowpea cabinet 2") |>
+  pivot_comments() 
+
+
+  full_join(
+  c2 |>
+    pivot_wider(id_cols = obs_id,
+                names_from = is_comment,
+                values_from = obs:hhmmss,
+                values_fn = str_flatten
+    ) |>
+    mutate(plant = str_extract(time_s_comment, "[Pp]lant (\\d{1,2})", group = 1)) |>
+    relocate(plant, .before = obs_id),
+  c2 |>
+    filter(is_comment == "observation")
+)[ , c(1:6)]
+ 
+```
+Note that in this example, the user forgot to comment one of the plant ids - that will need fixing later
+ 
+Also, the approach used should automatically handle duplicates because it only grabs the first match...
+```{r joining, echo = TRUE}
+
+c1 <- read_LI6800F("2023-05-30-1529_cowpea heat stress cabinet 1") |>
+  pivot_comments() 
+
+full_join(
+  c1 |>
+    pivot_wider(id_cols = obs_id,
+                names_from = is_comment,
+                values_from = obs:hhmmss,
+                values_fn = str_flatten
+    ) |>
+    mutate(plant = str_extract(time_s_comment, "[Pp]lant (\\d{1,2})", group = 1)) |>
+    relocate(plant, .before = obs_id),
+  c1 |>
+    filter(is_comment == "observation")
+)[ , c(1:6)]
+ 
+```
+
+A complete function (with sub functions incorporated for easier re-application)
+
+```{r function, echo = TRUE}
+
+read_LI6800F_2 <- function(file){
+  
+  make_df <- function(file){
+    all <- read.delim(file, header = FALSE, encoding = "UTF-8",
+                      #the weird file format forces me to fix col.names
+                      #after working it out from the text file
+                      col.names = paste0("C", c(1:282))
+    )
+    data_row <- as.numeric(row.names(all[all[ , 1] == "[Data]", ]))
+    #the lines below make and tidy up a single header that combines info from
+    # two lines in the file
+    cnms1 <- all[data_row + 2, ]
+    cnms2 <- all[data_row + 3, ]
+    cnms <- gsub("_\\>", "",
+                 gsub("\\.{2,}", ".", 
+                      make.names(
+                        gsub(" ", "_", paste(cnms1, cnms2, sep = "_")
+                        )
+                      )
+                 )
+    )
+    
+    use <- all[c((data_row + 4):nrow(all)), ]
+    names(use) <- cnms
+    row.names(use) <- c(1:nrow(use))
+    #remove duplicated columns that were included in the original file
+    use <- use[ , !duplicated(names(use))]
+    use
+  }
+  
+  pivot_comments <- function(df){
+    df$obs_id <- replace(df$obs, grepl("\\d{2}:\\d{2}:\\d{2}", df$obs), NA)
+    df$is_comment <- ifelse(is.na(df$obs_id), "comment", "observation")
+    for (i in 1:nrow(df)){
+      if(is.na(df[i, "obs_id"])){
+        df[i, "obs_id"] <- min(df[i:nrow(df), "obs_id"], na.rm = TRUE)
+      }
+    }
+    df
+  }  
+
+  join_labels <- function(file){
+    full_join(
+      pivot_comments(read_LI6800F(file)) |>
+        pivot_wider(id_cols = obs_id,
+                    names_from = is_comment,
+                    values_from = obs:hhmmss,
+                    values_fn = str_flatten
+        ) |>
+        mutate(plant = str_extract(time_s_comment,
+                                   "[Pp]lant (\\d{1,2})",
+                                   group = 1
+        )
+        ) |>
+        relocate(plant, .before = obs_id),
+      
+      pivot_comments(read_LI6800F(file)) |>
+        filter(is_comment == "observation")
+    )
+    
+  }
+  
+  join_labels(file)
+
+}
+
+read_LI6800F_2("2023-05-30-1529_cowpea heat stress cabinet 1")[ , c(1:6)]
+
+```
+and we can apply this across a list of files
+
+```{r map, echo = TRUE}
+
+fnms <- list.files(pattern = "2023.*")
+names(fnms) <- fnms
+#a <- sapply(fnms, read_LI6800F_2)
+
+
+a <- list_rbind(map(fnms, read_LI6800F_2), names_to = "file")
+
+head(a)[ , c(1:6)]
+
+#a <- map(fnms, read_LI6800F_2)
+
+```
+Further cleaning needed, but the data is in!
