@@ -2,7 +2,7 @@
 
 This repo stores the R demos and tutorials from our R community. Feel free to use and re-use - head to **[demos](demos)** for all materials. 
 
-**We meet in the LEC 3 Boardroom and on Teams every Wednesday at 12pm** to chat, demo useful R tricks, and debug our coding problems.
+**We meet in LEC 3 A51 and on Teams every Thursday at 10am* to chat, demo useful R tricks, and debug our coding problems.
 
 *Message James Robinson (james.robinson AT lancaster.ac.uk) if you'd like to join the slack channel or get the Teams link.*
 
@@ -12,7 +12,7 @@ Download these materials by clicking the green **Code** button above. Or stay up
 
 **Style & Workflow**
 
-* Workflow | [Resources](demos/workflow) | [Video](https://web.microsoftstream.com/video/3d30a18f-1d96-4418-8455-b0435d4b9265)
+* Workflow | [Resources](demos/workflow) | [Video](https://livelancsac.sharepoint.com/:v:/r/sites/Grp-LECCodingandStatsSupport/Shared%20Documents/General/Recordings/View%20Only/20231123%20-%20Workflow%20-%20Lisa.mp4?csf=1&web=1&e=2T5Ql9)
 * Staying organized in R | [Video](https://web.microsoftstream.com/video/b00b07fc-7895-4624-a02c-0437beda1849)
 
 **Tidyverse**
