@@ -30,7 +30,7 @@ Sometimes we receive data in wide format (few rows, many columns). But this is n
 # wide format data
 penguins
 
-# we want long format
+# we want long format for ggplot, summary stats
 penguins %>% 
   pivot_longer(!c(species,island,year, sex), names_to = "size_var", values_to = "value")
 ```
@@ -137,6 +137,9 @@ flights2<-flights %>%
   )
 
 flights2
+
+# "unused" retains only the columns not used in ... to create new columns. This is useful if you generate new columns, but no longer need the columns used to generate them. 
+#  ".before" moves your new variable to the first column of the dataframe
 ```
 
 ```{r}
@@ -148,7 +151,7 @@ Powerful options for summarising times with group_by(), and correcting for dayli
 
 ## What to focus on??
 
-Lots of different verbs and it is hard to keep track and keep up to date. The tidyverse is evolving very very quickly.
+Lots of different verbs and it is hard to keep track and keep up to date. The tidyverse is always evolving, and people are now writing ecology and stats packages in tidyverse.
 
 My recommended top 5 to learn off by heart:
 

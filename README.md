@@ -2,7 +2,7 @@
 
 This repo stores the R demos and tutorials from our R community. Feel free to use and re-use - head to **[demos](demos)** for all materials. 
 
-**We meet in LEC 3 A51 and on Teams every Thursday at 10am* to chat, demo useful R tricks, and debug our coding problems.
+**We meet in LEC 3 A51 and on Teams every Thursday at 10am** to chat, demo useful R tricks, and debug our coding problems.
 
 *Message James Robinson (james.robinson AT lancaster.ac.uk) if you'd like to join the slack channel or get the Teams link.*
 
@@ -14,10 +14,11 @@ Download these materials by clicking the green **Code** button above. Or stay up
 
 * Workflow | [Resources](demos/workflow) | [Video](https://livelancsac.sharepoint.com/:v:/r/sites/Grp-LECCodingandStatsSupport/Shared%20Documents/General/Recordings/View%20Only/20231123%20-%20Workflow%20-%20Lisa.mp4?csf=1&web=1&e=2T5Ql9)
 * Staying organized in R | [Video](https://web.microsoftstream.com/video/b00b07fc-7895-4624-a02c-0437beda1849)
+* Intro to GitHub | [Video](https://livelancsac.sharepoint.com/:v:/r/sites/Grp-LECCodingandStatsSupport/Shared%20Documents/General/Recordings/View%20Only/20231130%20-%20GitHub%20-%20James.mp4?csf=1&web=1&e=KZLtEa)
 
 **Tidyverse**
 
-* Intro to tidyverse 1 | [Resources](demos/tidyverse) | [Video](https://web.microsoftstream.com/video/ede13987-3ebb-4957-8e5e-6eaebfc39ca1)
+* Intro to tidyverse 1 | [Resources](demos/tidyverse) | [Video](https://livelancsac.sharepoint.com/:v:/r/sites/Grp-LECCodingandStatsSupport/Shared%20Documents/General/Recordings/View%20Only/20231109%20-%20Intro%20to%20TidyVerse%20-%20James.mp4?csf=1&web=1&e=o8ibYx)
 * Intro to tidyverse 2 | [Resources](demos/tidyverse) | [Video](https://web.microsoftstream.com/video/caab2def-9c6c-425e-aadf-a4b0cb51fe8e)
 * Data to figure using tidyverse & Strava |  [Resources](demos/rStrava) | [Video](https://web.microsoftstream.com/video/efb019bc-eb20-4017-b4b1-7a6480e4495b)
 * Tidyverse tricks |  [Resources](demos/tidyverse/tidyverse_tricks.Rmd) | [Video](https://web.microsoftstream.com/video/db32b9cf-e4b7-402b-8a79-8b2a530f2792)
@@ -26,7 +27,7 @@ Download these materials by clicking the green **Code** button above. Or stay up
 
 * Intro to maps | [Resources](demos/mapping/) | [Video](https://web.microsoftstream.com/video/38ae2633-3ea9-4450-9c1b-0d81f7249a16)
 * World maps | [Resources](demos/mapping) | [Video](https://web.microsoftstream.com/video/ff061266-b657-4391-92d7-f37db352c2bd)
-* Intro to ggplot2 | [Resources](demos/ggplot) | [Video](https://web.microsoftstream.com/video/539de994-abf1-429c-966d-2cb46f5bccaf)
+* Intro to ggplot2 | [Resources](demos/ggplot) | [Video](https://livelancsac.sharepoint.com/:v:/r/sites/Grp-LECCodingandStatsSupport/Shared%20Documents/General/Recordings/View%20Only/20231116%20-%20Intro%20to%20GGplot%20-%20Lisa.mp4?csf=1&web=1&e=D4RVBf)
 * Extending ggplot | [Resources](demos/ggplot_extensions/) | [Video](https://web.microsoftstream.com/video/7057bdea-f4b4-41a6-8f73-cb8500519044)
 * Themes | [Resources](demos/ggplot_extensions) | [Video](https://web.microsoftstream.com/video/9215e127-42f5-4fa9-8171-0c6a8ef8ab63)
 * Publication quality in base R | [Resources](https://github.com/smuel-tylor/Fast-Deactivation-of-Rubisco/blob/main/2_scripts_sun_shade_sun/Figure1_Multipanel_S_Vcmax_Vi_Vt.R)

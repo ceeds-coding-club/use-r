@@ -1,7 +1,7 @@
 #' ---
 #' title: Workflow demo - CEEDS useR group
 #' author: LBE  
-#' date: "Wed 19 Jan '22"
+#' date: "Wed 22 Nov '23"
 #' output: github_document
 #' ---  
 
@@ -40,19 +40,24 @@ relative_data <- read_csv("activities.csv") #will work for everyone you share da
 #' - Separate functions  
 #' - Simulations (calls all other scripts within)
 #'  
-#' ### 2. Use templates  
+#' ### 2. Code syntax  
+#' - Use a styleguide to improve readability of your code [e.g. Tidyverse style guide](https://style.tidyverse.org) 
+#' - File/object naming > commenting
+#' - Long lines in pipes and ggplot
+#' 
+#' 
+#' ### 3. Use templates  
 #' - Ensures consistent style in code and scripts
 #' - Reminds me to write clean code, well annotated
 #' - Makes it easier to go back to old code if it contains the same sections
-#' - Markdown session next week with Louis  
 #' 
-#' ### 3. Have a version control system in place  
-#' - GitHub most common - James 3rd Feb
+#' ### 4. Have a version control system in place  
+#' - GitHub most common 
 #' 
-#' ### 4. Improve!
+#' ### 5. Improve!
 #' Instead of getting overwhelmed with style guides, markdown syntax, file organisation etc., I like to start with good *intentions* at the start of each new project (and Project), and assume that I will progressively improve, rather than expecting perfection from the start. 
 #'  
-#' For example, this year I'm aiming to learn how to use `.RData` files. They are data bundles that can contain multiple objects (like a folder), and are a great way to share data with others. 
+#' For example, this year I'm trying to get out of creating so many named objects in each script, by combining more scetions into pipes
 #' 
 #' **Resources:**  
 #' - [Workflows in Rstudio](https://r4ds.had.co.nz/workflow-projects.html)  

@@ -18,19 +18,16 @@ output: html_document
 
 # Libraries
 ```{r, message=FALSE} 
-packages = c('tidyverse',
-            'patchwork',
-            'ggpubr')
-
-load.pack = lapply(packages,require,char=T)
-load.pack
-
+library(tidyverse)
+library(patchwork)
+library(ggpubr)
 ``` 
 
 # Data
 Today's data: a collection of dispersal and self-recruitment data for anemonefish
 ```{r}
-load("./PublicationFigures/NemoDatabase.Rdata")
+load("~/Documents/Work/R-Scripts/use-r/demos/ggplot/NemoDatabase.Rdata")
+
 ```   
 
 
