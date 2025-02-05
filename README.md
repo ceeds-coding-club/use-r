@@ -2,7 +2,7 @@
 
 This repo stores the R demos and tutorials from our R community. Feel free to use and re-use - head to **[demos](demos)** for all materials. 
 
-**We meet in LEC 3 A51 and on Teams every Thursday at 10am** to chat, demo useful R tricks, and debug our coding problems.
+**We meet in LEC 3 Boardroom and on Teams every Thursday at 10am** to chat, demo useful R tricks, and debug our coding problems.
 
 *Message James Robinson (james.robinson AT lancaster.ac.uk) if you'd like to join the slack channel or get the Teams link.*
 
